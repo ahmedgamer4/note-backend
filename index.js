@@ -1,7 +1,8 @@
+require('dotenv').config()
 const express = require('express')
-const nodemon = require('nodemon')
 const app = express()
 const cors = require('cors')
+const Note = require('./models/note')
 
 app.use(cors())
 app.use(express.json())
@@ -28,38 +29,32 @@ let notes = [
   }
 ]
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
-
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then(notes => response.json(notes))
 })
 
 app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const note = notes.find(note => note.id === id)
-  if (note) {
-    response.json(note)
-  }
-  else {
-    response.status(404).end()
-  }
+  const id = request.params.id
+  Note.findById(id)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      }
+      else {
+        response.status(404)
+      }
+    })
+    .catch(err => next(err))
 })
 
 app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
-
-  response.status(204).end()
+  const id = request.params.id
+  Note.findByIdAndRemove(id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(err => next(err))
 })
-
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
 
 app.post('/api/notes', (request, response) => {
   const body = request.body
@@ -70,20 +65,57 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date(),
-    id: generateId(),
-  }
+  })
 
-  notes = notes.cancat(note)
-
-  response.json(note)
+  note.save()
+    .then(savedNote => response.json(savedNote))
+    .catch(err => next(err))
 })
 
-const PORT = process.env.PORT || 3003
+app.put('/api/notes/:id', (req, res, next) => {
+  const body = req.body
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  }
+
+  Note.findByIdAndUpdate(
+    req.params.id,
+    {content, important},
+    { new: true, runValidators: true, context: 'query' })
+    .then(updatedNote => {
+      res.json(updatedNote)
+    })
+    .catch(err => next(err))
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: 'unkown endpoint'})
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CaseError') {
+    return response.status(400).send({error: 'malformatted id'})
+  }
+  else if (error.name === 'ValidationError') {
+    return response.status(400).send({error: error.message})
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
+const PORT = process.env.PORT || 3004
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-console.log(`Server running on port ${PORT}`)

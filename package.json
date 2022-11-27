@@ -12,9 +12,19 @@
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.7.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedgamer4/note-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmedgamer4/note-backend/issues"
+  },
+  "homepage": "https://github.com/ahmedgamer4/note-backend#readme"
 }

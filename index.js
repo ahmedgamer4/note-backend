@@ -56,7 +56,7 @@ app.delete('/api/notes/:id', (request, response) => {
     .catch(err => next(err))
 })
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (!body.content) {

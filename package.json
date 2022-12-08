@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "lint": "eslint ."
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "author": "Ahmed Alseidy",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongoose": "^6.7.3"
@@ -21,7 +22,9 @@
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^2.0.20"
+    "jest": "latest",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   },
   "repository": {
     "type": "git",
@@ -30,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/ahmedgamer4/note-backend/issues"
   },
-  "homepage": "https://github.com/ahmedgamer4/note-backend#readme"
+  "homepage": "https://github.com/ahmedgamer4/note-backend#readme",
+  "jest": {
+    "testEnvironment": "node"
+  }
 }

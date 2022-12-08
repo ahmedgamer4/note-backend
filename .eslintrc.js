@@ -3,6 +3,8 @@ module.exports = {
     browser: true,
     commonjs: true,
     es2021: true,
+    node: true,
+    jest: true,
   },
   extends: 'airbnb-base',
   overrides: [
@@ -11,25 +13,25 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
-    'indent': [
-      'error', 
-      2
-    ],
-    'semi': [
+    indent: [
       'error',
-      'never'
+      2,
     ],
-    'quotes': [
+    semi: [
       'error',
-      'single'
+      'never',
     ],
-    'eqeqeq': 'error',
+    quotes: [
+      'error',
+      'single',
+    ],
+    eqeqeq: 'error',
     'no-trailing-spaces': 'error',
     'object-curly-spacing': [
-      'error', 'always'
+      'error', 'always',
     ],
     'arrow-spacing': [
-      'error', { 'before': true, 'after': true }
+      'error', { before: true, after: true },
     ],
     'no-console': 0,
   },
